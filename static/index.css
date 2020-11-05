@@ -1,0 +1,89 @@
+body,
+#root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  margin: unset;
+  font-family: Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+}
+#root {
+  overflow: scroll;
+}
+
+p,
+h1 {
+  margin: unset;
+}
+h1 {
+  font-weight: 600;
+}
+
+ul {
+  padding-left: 20px;
+  margin-top: 4px;
+  font-size: 0.85rem;
+}
+ul > li {
+  margin-bottom: 4px;
+}
+
+i {
+  opacity: 0.4;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+button {
+  cursor: pointer;
+}
+
+.lobby-container {
+  padding: 20px;
+}
+.board-container {
+  padding: 4px;
+  padding-top: 12px;
+}
+.lobby-container,
+.board-container {
+  box-sizing: border-box;
+  background: #f2f2f2;
+  height: 100%;
+}
+
+.lobby-container > div,
+.board-container > div {
+  box-sizing: border-box;
+  background-color: #fff;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.lobby-container .player-description {
+  padding-top: 12px;
+}
+.lobby-container .player-description > span {
+  line-height: 42px;
+  padding-left: 12px;
+  font-size: 1.2rem;
+}
+
+.board-container .game-board {
+  padding: unset;
+  margin: auto;
+  background: unset;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.button-row,
+.lobby-container > .button-row,
+.board-container > .button-row {
+  padding: 20px;
+}
+.button-row > button {
+  margin-right: 20px;
+}
+.button-row > button:last-child {
+  margin-right: 0px;
+}
