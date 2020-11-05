@@ -6,12 +6,12 @@ const app = express();
 
 app.use(express.static(__dirname + "/static"));
 
-app.listen(3000, () => {
+app.listen(process.env.APP_PORT, () => {
   console.log(`Server running at http://localhost:${process.env.APP_PORT}`);
   console.log(`(App mode is set to ${process.env.APP_ENV})`);
 });
 
-const server = app.listen(3001);
+const server = app.listen(process.env.WS_PORT);
 server.on('upgrade', (request, socket, head) => {
   wsServer.handleUpgrade(request, socket, head, socket => {
     wsServer.emit('connection', socket, request);
