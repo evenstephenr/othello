@@ -121,7 +121,7 @@ var App = function App() {
   var connection = React.useRef(null);
 
   React.useEffect(function () {
-    // TODO: this should read from a .env
+    // TODO: dotenv
     var socket = new WebSocket('ws://192.168.2.164:3001');
     connection.current = socket;
     // Connection opened

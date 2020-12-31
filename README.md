@@ -2,10 +2,25 @@
 
 This is a custom implementation of the game named Othello
 
-> Want to learn more about how to play Othello? [Click here](https://www.mastersofgames.com/rules/reversi-othello-rules.htm)
+> Want to learn more about Othello? [Click here](https://www.mastersofgames.com/rules/reversi-othello-rules.htm)
 
-### Notes
+### Setting up your dev environment
 
-- TODO: make a production build of this app (using .env configs and a clean source tree)
-- TODO: verify the cleanup functionality (in `ws.js`) works
-- TODO: add the auto-detection for no available moves for a user to take (auto-skip)
+1. Clone or fork this repo
+
+2. Install dependencies by running `npm i` in the project root
+
+3. You can run the command `npm start` to spin up an instance of the game, and enable hot-reloading for the _server_ directory in the project root
+
+4. You can run the command `npm run start-babel` to enable hot-reloading for the _static/jsx_ directory in the project root
+
+### Deploying this app
+
+Today, there isn't a 'production' deploy or build step. If you'd like to run the game on your own machine, clone or fork the repo, install dependencies, and then run the command `npm start` to spin up an instance of the game on your home network
+
+### TODOs
+
+- make a production build of this app (using dotenv configs and a clean source tree)
+- implement 'room' functionality for multiple games and clients
+- add auto-detection for no available moves for a user to take (auto-skip, refactor to validate moves ahead of time?)
+- verify the disconnected client cleanup functionality (in `ws.js`) works

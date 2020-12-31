@@ -98,7 +98,7 @@ const App = () => {
   const connection = React.useRef(null);
 
   React.useEffect(() => {
-    // TODO: this should read from a .env if this is going to be public
+    // TODO: dotenv
     const socket = new WebSocket('ws://192.168.2.164:3001');
     connection.current = socket;
     // Connection opened
