@@ -48,7 +48,7 @@ module.exports = (function() {
       client.isAlive = false;
       client.ping(noop);
     });
-  }, 30000);
+  }, process.env.WS_CLIENT_TIMEOUT_MS);
 
   wsServer.on('close', function close() {
     clearInterval(interval);

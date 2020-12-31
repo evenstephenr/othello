@@ -7,7 +7,7 @@ const app = express();
 app.use(express.static(__dirname + "/static"));
 
 app.listen(process.env.APP_PORT, () => {
-  console.log(`Server running at http://localhost:${process.env.APP_PORT}`);
+  console.log(`Server running at http://${process.env.SERVER_ADDRESS}:${process.env.APP_PORT}`);
   console.log(`(App mode is set to ${process.env.APP_ENV})`);
 });
 

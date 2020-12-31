@@ -122,7 +122,7 @@ var App = function App() {
 
   React.useEffect(function () {
     // TODO: dotenv
-    var socket = new WebSocket('ws://192.168.2.164:3001');
+    var socket = new WebSocket("ws://" + "192.168.2.164" + ":" + "3002");
     connection.current = socket;
     // Connection opened
     socket.addEventListener('open', function () {

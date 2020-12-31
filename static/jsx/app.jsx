@@ -1,5 +1,10 @@
 "use strict";
 
+import {
+  SERVER_ADDRESS,
+  WS_PORT,
+} from "babel-dotenv"
+
 const Button = ({
   children,
   style = {},
@@ -99,7 +104,7 @@ const App = () => {
 
   React.useEffect(() => {
     // TODO: dotenv
-    const socket = new WebSocket('ws://192.168.2.164:3001');
+    const socket = new WebSocket(`ws://${SERVER_ADDRESS}:${WS_PORT}`);
     connection.current = socket;
     // Connection opened
     socket.addEventListener('open', function () {
