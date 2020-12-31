@@ -23,4 +23,3 @@ Today, there isn't a 'production' deploy or build step. If you'd like to run the
 - make a production build of this app (using dotenv configs and a clean source tree)
 - implement 'room' functionality for multiple games and clients
 - add auto-detection for no available moves for a user to take (auto-skip, refactor to validate moves ahead of time?)
-- verify the disconnected client cleanup functionality (in `ws.js`) works

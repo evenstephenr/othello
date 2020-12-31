@@ -5,14 +5,8 @@ const { StateManager } = require("./state");
 module.exports = (function() {
   const State = new StateManager();
   const wsServer = new ws.Server({ noServer: true });
-  function noop() {}
-  function heartbeat() {
-    this.isAlive = true;
-  }
 
   wsServer.on('connection', (socket) => {
-    socket.isAlive = true;
-    socket.on('pong', heartbeat);
     socket.on('message', (message) => {
       const update = JSON.parse(message);
       console.log(update);
@@ -40,15 +34,6 @@ module.exports = (function() {
       });
     });
   });
-
-  const interval = setInterval(function ping() {
-    wsServer.clients.forEach(function each(client) {
-      if (client.isAlive === false) return client.terminate();
-
-      client.isAlive = false;
-      client.ping(noop);
-    });
-  }, process.env.WS_CLIENT_TIMEOUT_MS);
 
   wsServer.on('close', function close() {
     clearInterval(interval);
