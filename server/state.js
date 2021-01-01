@@ -9,9 +9,8 @@ class StateManager {
       board[i] = new Array(8);
     }
     this.state = {
+      ...this.state,
       board,
-      black: undefined,
-      white: undefined,
       turn: undefined,
       playerList: [],
       ready: false,
@@ -157,27 +156,31 @@ class StateManager {
   }
 
   registerPlayer(playerId, color) {
-    if (this.state.black && this.state.white) {
-      return false;
-    }
-
-    if (color) {
-      if (this.state.black === playerId) this.state.black = '';
-      if (this.state.white === playerId) this.state.white = '';
-      this.state[color] = playerId;
-      return true;
-    }
-
-    if (!this.state.black) {
-      this.state.black = playerId;
-      this.state.turn = playerId;
-    } else if (!this.state.white) {
-      this.state.white = playerId;
+    if (color && typeof this.state[color] !== 'undefined') {
+      // swap players
+      if (color === 'white') {
+        this.state.black = this.state.white;
+        this.state.turn = this.state.black;
+        this.state.white = playerId;
+      }
+      if (color === 'black') {
+        this.state.white = this.state.black;
+        this.state.black = playerId;
+        this.state.turn = playerId;
+      }
+    } else {
+      if (!this.state.black) {
+        // black goes first
+        this.state.black = playerId;
+        this.state.turn = playerId;
+      } else if (!this.state.white) {
+        this.state.white = playerId;
+      }
     }
 
     if (this.state.black && this.state.white) this.initializeBoard();
 
-    return true;
+    return this;
   }
 
   readyUp(playerId) {

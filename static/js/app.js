@@ -108,15 +108,79 @@ var Board = function Board(_ref3) {
   );
 };
 
-var App = function App() {
-  var _React$useState = React.useState(Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 12)),
-      _React$useState2 = _slicedToArray(_React$useState, 1),
-      playerId = _React$useState2[0];
+var RoomCreator = function RoomCreator(_ref4) {
+  var playerId = _ref4.playerId,
+      connection = _ref4.connection;
 
-  var _React$useState3 = React.useState({ board: [] }),
-      _React$useState4 = _slicedToArray(_React$useState3, 2),
-      data = _React$useState4[0],
-      setData = _React$useState4[1];
+  var _React$useState = React.useState(function () {
+    var randomHexString = Math.random().toString(16).toUpperCase();
+    return randomHexString.substring(randomHexString.length - 4, randomHexString.length);
+  }),
+      _React$useState2 = _slicedToArray(_React$useState, 2),
+      roomId = _React$useState2[0],
+      setRoomId = _React$useState2[1];
+
+  return React.createElement(
+    "div",
+    { className: "lobby-container" },
+    React.createElement(
+      "div",
+      null,
+      React.createElement(
+        "p",
+        null,
+        "Welcome to"
+      ),
+      React.createElement(
+        "h1",
+        null,
+        "Othello"
+      )
+    ),
+    React.createElement(
+      "div",
+      null,
+      React.createElement(
+        "form",
+        {
+          onSubmit: function onSubmit(e) {
+            e.preventDefault();
+            connection.current.send(JSON.stringify({
+              type: "ROOM_JOIN",
+              roomId: roomId,
+              playerId: playerId
+            }));
+          }
+        },
+        React.createElement("input", {
+          type: "text",
+          value: roomId,
+          onChange: function onChange(_ref5) {
+            var target = _ref5.target;
+            return setRoomId(target.value);
+          }
+        }),
+        React.createElement(
+          Button,
+          {
+            type: "submit"
+          },
+          "Join or Create a room"
+        )
+      )
+    )
+  );
+};
+
+var App = function App() {
+  var _React$useState3 = React.useState(Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 12)),
+      _React$useState4 = _slicedToArray(_React$useState3, 1),
+      playerId = _React$useState4[0];
+
+  var _React$useState5 = React.useState({ board: [] }),
+      _React$useState6 = _slicedToArray(_React$useState5, 2),
+      data = _React$useState6[0],
+      setData = _React$useState6[1];
 
   var connection = React.useRef(null);
 
@@ -138,12 +202,20 @@ var App = function App() {
     });
   }, []);
 
-  var board = data.board,
+  var roomId = data.roomId,
+      board = data.board,
       white = data.white,
       black = data.black,
       turn = data.turn,
       ready = data.ready;
 
+
+  if (!roomId) {
+    return React.createElement(RoomCreator, {
+      playerId: playerId,
+      connection: connection
+    });
+  }
 
   if (!white || !black || !ready) {
     return React.createElement(
@@ -205,6 +277,16 @@ var App = function App() {
           )
         ),
         React.createElement(
+          "p",
+          null,
+          "Room ID ",
+          React.createElement(
+            "strong",
+            null,
+            roomId
+          )
+        ),
+        React.createElement(
           "i",
           null,
           "Choose your color..."
@@ -215,25 +297,8 @@ var App = function App() {
           React.createElement(Cell, {
             onClick: function onClick() {
               return connection.current.send(JSON.stringify({
-                type: 'INIT',
-                playerId: playerId,
-                color: 'white'
-              }));
-            },
-            color: '#f3f3f3' }),
-          !!white && React.createElement(
-            "span",
-            null,
-            white
-          )
-        ),
-        React.createElement(
-          "div",
-          { className: "player-description" },
-          React.createElement(Cell, {
-            onClick: function onClick() {
-              return connection.current.send(JSON.stringify({
-                type: 'INIT',
+                type: 'COLOR_CHANGE',
+                roomId: roomId,
                 playerId: playerId,
                 color: 'black'
               }));
@@ -243,6 +308,25 @@ var App = function App() {
             "span",
             null,
             black
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "player-description" },
+          React.createElement(Cell, {
+            onClick: function onClick() {
+              return connection.current.send(JSON.stringify({
+                type: 'COLOR_CHANGE',
+                roomId: roomId,
+                playerId: playerId,
+                color: 'white'
+              }));
+            },
+            color: '#f3f3f3' }),
+          !!white && React.createElement(
+            "span",
+            null,
+            white
           )
         ),
         !!playerId && white === playerId && React.createElement(
@@ -265,6 +349,7 @@ var App = function App() {
             onClick: function onClick() {
               return connection.current.send(JSON.stringify({
                 type: 'READY',
+                roomId: roomId,
                 playerId: playerId
               }));
             },
@@ -277,11 +362,12 @@ var App = function App() {
           {
             onClick: function onClick() {
               return connection.current.send(JSON.stringify({
-                type: "RESET"
+                type: "RESET",
+                roomId: roomId
               }));
             }
           },
-          "Reset the server"
+          "Reset the game"
         )
       )
     );
@@ -342,7 +428,8 @@ var App = function App() {
           type: "SELECT",
           row: row,
           col: col,
-          playerId: playerId
+          playerId: playerId,
+          roomId: roomId
         }));
       }
     }),
@@ -372,7 +459,8 @@ var App = function App() {
         {
           onClick: function onClick() {
             return connection.current.send(JSON.stringify({
-              type: "PASS"
+              type: "PASS",
+              roomId: roomId
             }));
           }
         },
@@ -383,7 +471,8 @@ var App = function App() {
         {
           onClick: function onClick() {
             return connection.current.send(JSON.stringify({
-              type: "RESET"
+              type: "RESET",
+              roomId: roomId
             }));
           }
         },

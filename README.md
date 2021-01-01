@@ -22,6 +22,12 @@ Today, there isn't a 'production' deploy or build step. If you'd like to run the
 
 ### TODOs
 
-- make a production build of this app (using dotenv configs and a clean source tree)
-- implement 'room' functionality for multiple games and clients
+- make a minimized (production) build of this app
 - add auto-detection for no available moves for a user to take (auto-skip, refactor to validate moves ahead of time?)
+- gracefully handle client disconnections
+  - notify other player if their user disconnects or gets booted
+  - save game locally for later continuation?
+  - how should game 'resets' work?
+  - automatically check for dead network connections or timeouts (are you still playing?)
+- add confetti for winning the game (lol)
+- improve logging system for in-game events per room (server-side)

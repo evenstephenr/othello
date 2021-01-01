@@ -97,6 +97,45 @@ const Board = ({ board, onCellClick, white, black }) => (
   </div>
 );
 
+const RoomCreator = ({ playerId, connection }) => {
+  const [roomId, setRoomId] = React.useState(() => {
+    const randomHexString = Math.random().toString(16).toUpperCase();
+    return randomHexString.substring(randomHexString.length - 4, randomHexString.length);
+  });
+
+  return (
+    <div className="lobby-container">
+      <div>
+        <p>Welcome to</p>
+        <h1>Othello</h1>
+      </div>
+      <div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            connection.current.send(JSON.stringify({
+              type: "ROOM_JOIN",
+              roomId,
+              playerId,
+            }));
+          }}
+        >
+          <input
+            type="text"
+            value={roomId}
+            onChange={({ target }) => setRoomId(target.value)}
+          />
+          <Button
+            type="submit"
+          >
+            Join or Create a room
+          </Button>
+        </form>
+      </div>
+    </div>
+  )
+}
+
 const App = () => {
   const [playerId] = React.useState(Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 12));
   const [data, setData] = React.useState({ board: [] });
@@ -120,7 +159,23 @@ const App = () => {
     });
   }, []);
 
-  const { board, white, black, turn, ready } = data;
+  const {
+    roomId,
+    board,
+    white,
+    black,
+    turn,
+    ready,
+  } = data;
+
+  if (!roomId) {
+    return (
+      <RoomCreator
+        playerId={playerId}
+        connection={connection}
+      />
+    )
+  }
 
   if (!white || !black || !ready) {
     return (
@@ -139,26 +194,29 @@ const App = () => {
         </div>
         <div className="lobby-players">
           <p>Your player ID is <strong>{playerId}</strong></p>
+          <p>Room ID <strong>{roomId}</strong></p>
           <i>Choose your color...</i>
           <div className="player-description">
             <Cell
               onClick={() => connection.current.send(JSON.stringify({
-                type: 'INIT', 
-                playerId, 
-                color: 'white'
+                type: 'COLOR_CHANGE',
+                roomId,
+                playerId,
+                color: 'black',
               }))}
-              color={'#f3f3f3'} />
-            {!!white && (<span>{white}</span>)}
+              color={'#2C3A47'} />
+            {!!black && (<span>{black}</span>)}
           </div>
           <div className="player-description">
             <Cell
               onClick={() => connection.current.send(JSON.stringify({
-                type: 'INIT', 
-                playerId, 
-                color: 'black'
+                type: 'COLOR_CHANGE',
+                roomId,
+                playerId,
+                color: 'white',
               }))}
-              color={'#2C3A47'} />
-            {!!black && (<span>{black}</span>)}
+              color={'#f3f3f3'} />
+            {!!white && (<span>{white}</span>)}
           </div>
           {!!playerId && white === playerId && (<p>{`you will go second`}</p>)}
           {!!playerId && black === playerId && (<p>{`you will go first`}</p>)}
@@ -167,6 +225,7 @@ const App = () => {
           <Button
             onClick={() => connection.current.send(JSON.stringify({
               type: 'READY',
+              roomId,
               playerId,
             }))}
             disabled={!white || !black}
@@ -175,10 +234,11 @@ const App = () => {
           </Button>
           <Button
             onClick={() => connection.current.send(JSON.stringify({
-              type: "RESET"
+              type: "RESET",
+              roomId,
             }))}
           >
-            Reset the server
+            Reset the game
           </Button>
         </div>
       </div>
@@ -227,6 +287,7 @@ const App = () => {
           row,
           col,
           playerId,
+          roomId,
         }))}}
       />
       <div className="message-container">
@@ -239,14 +300,16 @@ const App = () => {
       <div className="button-row">
         <Button 
           onClick={() => connection.current.send(JSON.stringify({
-            type: "PASS"
+            type: "PASS",
+            roomId,
           }))}
         >
           Pass
         </Button>
         <Button 
           onClick={() => connection.current.send(JSON.stringify({
-            type: "RESET"
+            type: "RESET",
+            roomId,
           }))}
         >
           Reset the server
